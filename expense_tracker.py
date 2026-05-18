@@ -1,19 +1,18 @@
 from flask import Flask, request
 from twilio.rest import Client
-from pyngrok import ngrok, conf
 import pandas as pd
 import os
 from datetime import datetime
 
 app = Flask(__name__)
 
-account_sid = "ACd1dd442531ac5bf39ae85ac1ae4a1720"
-auth_token  = "0fd6c0a563f3fe51d738d109beb1ad72"
-to_number   = "whatsapp:+919663084587"
-ngrok_token = "3DDDPlnei5o7Cs0FW714MgC8JOi_6gARcrPadczhvdU5uhx4m"
+import os
 
-from_number  = "whatsapp:+14155238886"
-EXCEL_FILE   = "/Users/rachit/Desktop/expenses.xlsx"
+account_sid = os.environ.get("ACd1dd442531ac5bf39ae85ac1ae4a1720")
+auth_token  = os.environ.get("0fd6c0a563f3fe51d738d109beb1ad72")
+to_number   = os.environ.get("9663084587")
+from_number = "whatsapp:+14155238886"
+EXCEL_FILE  = "/tmp/expenses.xlsx"
 MONTHLY_BUDGET = 70000
 
 CATEGORIES = [
@@ -117,10 +116,6 @@ def whatsapp_reply():
     return "OK"
 
 if __name__ == "__main__":
-    conf.get_default().auth_token = ngrok_token
-    public_url = ngrok.connect(5000).public_url
-    print("\nBot is running!")
-    print("Your ngrok URL: " + public_url + "/whatsapp")
-    print("\nCopy this URL and paste it in Twilio WhatsApp Sandbox settings!")
-    print("\nWaiting for WhatsApp messages...\n")
-    app.run(port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    print("Bot is running!")
+    app.run(host="0.0.0.0", port=port)
